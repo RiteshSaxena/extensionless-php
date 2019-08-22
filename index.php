@@ -1,15 +1,29 @@
 <?php
-if(empty($_SERVER['QUERY_STRING'])){
-    $path = "home.php";
-}else{
-    $path = str_replace('/','.',$_SERVER['QUERY_STRING']).".php";
+$basename = "";
+if(dirname($_SERVER['SCRIPT_NAME']) != '/'){
+    $basename = dirname($_SERVER['SCRIPT_NAME']);
 }
 
-if (!file_exists($path)){
+$full_query = explode("?", str_replace($basename,"",$_SERVER['REQUEST_URI']));
+
+if($full_query[0] == '/' || $full_query[0] == '/index.php'){
+    $actual_path = "home.php";
+}else{
+    $actual_path = str_replace('/','.',substr($full_query[0],1)).".php";
+}
+
+if (!file_exists($actual_path)){
     http_response_code(404);
     die();
 }
 
-$TOP = $_SERVER['REQUEST_SCHEME']."://".$_SERVER['SERVER_NAME']."/".dirname($_SERVER['SCRIPT_NAME']);
+if(isset($query[1])){
+    foreach (explode("&",$full_query[1]) as $args){
+        $args_pair = explode("=",$args);
+        $_GET[$args_pair[0]] = $args_pair[1];
+    }
+}
 
-include $path;
+$TOP = $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . $basename;
+
+include $actual_path;
