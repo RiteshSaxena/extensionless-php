@@ -17,7 +17,7 @@ if (!file_exists($actual_path)){
     die();
 }
 
-if(isset($query[1])){
+if(isset($full_query[1])){
     foreach (explode("&",$full_query[1]) as $args){
         $args_pair = explode("=",$args);
         $_GET[$args_pair[0]] = $args_pair[1];
